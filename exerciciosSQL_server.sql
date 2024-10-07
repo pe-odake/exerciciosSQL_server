@@ -44,7 +44,7 @@ FROM DimProduct
 SELECT DISTINCT ProductKey
 FROM DimProduct
 
---SELECT DISTINCT ProductKey
---FROM FactSales
+SELECT DISTINCT ProductKey
+FROM FactSales
 
 --há um produto que não foi vendido
