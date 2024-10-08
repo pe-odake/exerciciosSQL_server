@@ -7,15 +7,10 @@ FROM FactSales
 ORDER BY SalesAmount ASC
 
 --2)
-SELECT TOP (10) 
-	ProductName,
-	UnitPrice,
-	Weight,
-	Size
-
+SELECT TOP (10) *
 FROM DimProduct
 
-ORDER BY UnitPrice DESC, Weight DESC, Size DESC
+ORDER BY UnitPrice DESC, Weight DESC, Size DESC --outra forma seria pela data da venda
 
 --3)
 --a), b)
@@ -24,7 +19,7 @@ SELECT
 	Weight AS 'Peso'
 
 FROM DimProduct
-WHERE Weight > 100
+WHERE Weight > 220 
 
 
 --c)
@@ -36,36 +31,36 @@ SELECT
 	StoreName AS 'Nome da Loja',
 	OpenDate AS 'Data de Abertura',
 	Closedate AS 'Data de Fechamento',
-	EmployeeCount AS 'Número de Funcionários'
+	EmployeeCount AS 'NÃºmero de FuncionÃ¡rios'
 
 FROM DimStore
-WHERE CloseDate IS NULL 
+WHERE StoreType = 'Store' AND CloseDate IS NULL 
 
---Há 294 lojas ativas
+--HÃ¡ 287 lojas ativas
 
 --5)
 SELECT 
 	ProductKey,
 	ProductName,
-	Manufacturer,
+	BrandName,
 	AvailableForSaleDate
 	
 FROM DimProduct 
 
-WHERE Manufacturer = 'Litware, Inc.' AND AvailableForSaleDate = '15/03/2009'
+WHERE BrandName = 'Litware' AND AvailableForSaleDate = '15/03/2009'
 
 --6)
 --a)	
 SELECT 
-	Status,
 	StoreKey,
+	Status,
 --b)
 	Closedate 
 
 FROM DimStore
 
 WHERE CloseDate IS NOT NULL
---O closeDate se refere a quando as lojas fecharam, portanto as lojas que não estão mais ativas
+--O closeDate se refere a quando as lojas fecharam, portanto as lojas que nÃ£o estÃ£o mais ativas
 
 --7)
 SELECT 
@@ -74,45 +69,31 @@ SELECT
 	EmployeeCount
 
 FROM DimStore
-	WHERE EmployeeCount BETWEEN 1 AND 20 --Lojas que precisaram de 1 cafeteria
-------------------------------------
-SELECT 
-	StoreKey,
-	StoreName,
-	EmployeeCount
-
-FROM DimStore
-	WHERE EmployeeCount BETWEEN 21 AND 50 --Lojas que precisaram de 2 cafeteria
-------------------------------------
-SELECT 
-	StoreKey,
-	StoreName,
-	EmployeeCount
-
-FROM DimStore
-	WHERE EmployeeCount > 51--Lojas que precisaram de 3 cafeteria
-
-
+	--WHERE EmployeeCount BETWEEN 1 AND 20 Lojas que precisaram de 1 cafeteria
+	--WHERE EmployeeCount BETWEEN 21 AND 50 Lojas que precisaram de 2 cafeteria
+	WHERE EmployeeCount > 50--Lojas que precisaram de 3 cafeteria
+	
 --8)
 SELECT
 	ProductName,
+	ProductDescription,
 	ProductKey,
 	UnitPrice
 
 FROM DimProduct
 
-WHERE ProductName LIKE '%LCD%'
+WHERE ProductDescription LIKE '%LCD%'
 ORDER BY UnitPrice ASC
 
 --9)
 SELECT 
 	ProductName,
-	Manufacturer,
+	BrandName,
 	ColorName
 
 FROM DimProduct
 
-WHERE ColorName IN ('Green', 'Orange', 'Black', 'Silver', 'Pink') AND Manufacturer IN ('Contoso, Ltd', 'Litware, Inc.', 'Fabrikam, Inc.')
+WHERE ColorName IN ('Green', 'Orange', 'Black', 'Silver', 'Pink') AND BrandName IN ('Contoso', 'Litware', 'Fabrikam')
 
 --10)
 SELECT *
