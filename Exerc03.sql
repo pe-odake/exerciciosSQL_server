@@ -2,37 +2,42 @@ use ContosoRetailDW
 
 --1)
 SELECT 
-	COUNT(SalesQuantity),
-	COUNT(ReturnQuantity)
+	SUM(SalesQuantity) AS 'Quant. Venda',
+	SUM(ReturnQuantity) AS 'Quant. Devolvida'
 FROM FactSales
 
+WHERE channelKey = 1
+	
 --2)
 SELECT 
-AVG(YearlyIncome)
+AVG(YearlyIncome) AS 'MÃ©dia do Salario'
 FROM DimCustomer
 
 WHERE Occupation = 'Professional'
 
 --3)
---a)
+--a), b)
 SELECT 
-	MAX(EmployeeCount) AS 'Maior Número de Funcinários'
+	MAX(EmployeeCount) AS 'Maior NÃºmero de FuncinÃ¡rios',
+	MIN(EmployeeCount) AS 'Menor NÃºmero de FuncinÃ¡rios'
 FROM DimStore
-
---b)
-SELECT TOP (1) StoreName AS 'Nome da Loja com mais Funcionários'
-FROM DimStore
-ORDER BY StoreName DESC
 
 --c)
-SELECT 
-	MIN(EmployeeCount) AS 'Menor Número de Funcinários'
+SELECT TOP (1)
+	StoreName AS 'Nome da Loja com mais FuncionÃ¡rios',
+	EmployeeCount
 FROM DimStore
 
+ORDER BY EmployeeCount DESC 
+
 --d)
-SELECT TOP (1) StoreName AS 'Nome da Loja com menos Funcionários'
+SELECT TOP (1)
+	StoreName AS 'Nome da Loja com menos FuncionÃ¡rios',
+	EmployeeCount
 FROM DimStore
-ORDER BY StoreName ASC
+
+WHERE EmployeeCount IS NOT NULL
+ORDER BY EmployeeCount ASC
 
 --4)
 --a), b)
