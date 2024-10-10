@@ -1,141 +1,152 @@
 use ContosoRetailDW
 
-----1)
-----a)
---SELECT 
---	channelKey,
---	COUNT(SalesQuantity) AS 'Quantidade Vendida'
+--1)
+--a)
+SELECT 
+	channelKey,
+	COUNT(SalesQuantity) AS 'Quantidade Vendida'
 
---FROM FactSales
+FROM FactSales
 
---GROUP BY channelKey
+GROUP BY channelKey
 
-----b)
---SELECT 
---	StoreKey,
---	SUM(SalesQuantity) AS 'Quant. Vendida',
---	SUM(ReturnQuantity) AS 'Quant. Retornada'
+--b)
+SELECT 
+	StoreKey,
+	SUM(SalesQuantity) AS 'Quant. Vendida',
+	SUM(ReturnQuantity) AS 'Quant. Retornada'
 
---FROM FactSales
+FROM FactSales
 
---GROUP BY StoreKey
---ORDER By StoreKey ASC
+GROUP BY StoreKey
+ORDER By StoreKey ASC
 
-----c) NO PROCESSO
---SELECT 
---	channelKey,
---	COUNT(SalesAmount) AS 'valor total vendido'
+--c) NO PROCESSO
+SELECT 
+	channelKey,
+	COUNT(SalesAmount) AS 'valor total vendido'
 
---FROM FactSales
---GROUP BY channelKey
+FROM FactSales
+GROUP BY channelKey
 
-----2)
-----a), b)
+--2)
+--a), b)
 
---SELECT TOP (10)
---	ProductKey,
---	COUNT(SalesQuantity) AS 'Quant. Vendida',
---	SUM(SalesAmount) 'Valor Total Vendido'
+SELECT TOP (10)
+	ProductKey,
+	COUNT(SalesQuantity) AS 'Quant. Vendida',
+	SUM(SalesAmount) 'Valor Total Vendido'
 
---FROM FactSales
---GROUP BY ProductKey
-----HAVING SUM(SalesAmount) > 5000000
+FROM FactSales
+GROUP BY ProductKey
+--HAVING SUM(SalesAmount) > 5000000
 
---ORDER BY SUM(SalesAmount) DESC
+ORDER BY SUM(SalesAmount) DESC
 
-----3)
-----a)
+--3)
+--a)
 
---SELECT 
---	CustomerKey,
---	SUM(SalesQuantity) AS 'Quant. de Comprar'
+SELECT 
+	CustomerKey,
+	SUM(SalesQuantity) AS 'Quant. de Comprar'
 
---FROM FactOnlineSales
+FROM FactOnlineSales
 
---GROUP BY CustomerKey
---ORDER BY SUM(SalesQuantity) DESC
+GROUP BY CustomerKey
+ORDER BY SUM(SalesQuantity) DESC
 
-----b)
---SELECT TOP (3)
---	ProductKey,
---	COUNT(SalesQuantity) AS 'Quant. Comprada'
+--b)
+SELECT TOP (3)
+	ProductKey,
+	COUNT(SalesQuantity) AS 'Quant. Comprada'
 
 
---FROM FactOnlineSales
---WHERE CustomerKey = 19037
---GROUP BY ProductKey
+FROM FactOnlineSales
+WHERE CustomerKey = 19037
+GROUP BY ProductKey
 
---ORDER BY COUNT(SalesQuantity) DESC
+ORDER BY COUNT(SalesQuantity) DESC
 
-----4)
-----a)
+--4)
+--a)
 
---SELECT 
---	BrandName,
---	COUNT(ProductKey) AS 'Número de Produtos por Marca'
+SELECT 
+	BrandName,
+	COUNT(ProductKey) AS 'Número de Produtos por Marca'
 	
---FROM DimProduct
---GROUP BY BrandName
+FROM DimProduct
+GROUP BY BrandName
 
-----b)
---SELECT 
---	ClassName,
---	AVG(UnitPrice) AS 'Média por Classe'
+--b)
+SELECT 
+	ClassName,
+	AVG(UnitPrice) AS 'Média por Classe'
 
---FROM DimProduct
---GROUP BY ClassName
+FROM DimProduct
+GROUP BY ClassName
 
-----c)
---SELECT 
---	ColorName,
---	SUM(Weight) AS 'Peso Total das Cores'
+--c)
+SELECT 
+	ColorName,
+	SUM(Weight) AS 'Peso Total das Cores'
 
---FROM DimProduct
---GROUP BY ColorName
+FROM DimProduct
+GROUP BY ColorName
 
-----5)
+--5)
 
---SELECT 
---	StockTypeName,
---	SUM(Weight)
+SELECT 
+	StockTypeName,
+	SUM(Weight)
 
---FROM DimProduct
---WHERE BrandName = 'Contoso'
---GROUP BY StockTypeName
---ORDER BY SUM(Weight) DESC
+FROM DimProduct
+WHERE BrandName = 'Contoso'
+GROUP BY StockTypeName
+ORDER BY SUM(Weight) DESC
 
-----6)
+--6)
 
---SELECT 
---	BrandName,
---	COUNT(DISTINCT ColorName)
+SELECT 
+	BrandName,
+	COUNT(DISTINCT ColorName)
 
---FROM DimProduct
---GROUP BY BrandName
---ORDER BY COUNT(DISTINCT ColorName) ASC
+FROM DimProduct
+GROUP BY BrandName
+ORDER BY COUNT(DISTINCT ColorName) ASC
 
-----7)
+--7)
 
---SELECT 
---	Gender,
---	COUNT(CustomerKey),
---	AVG(YearlyIncome)
+SELECT 
+	Gender,
+	COUNT(CustomerKey),
+	AVG(YearlyIncome)
 
---FROM DimCustomer
---WHERE Gender IS NOT NULL
---GROUP BY Gender
+FROM DimCustomer
+WHERE Gender IS NOT NULL
+GROUP BY Gender
 
-----9)
+--8)
+SELECT 
+	Education,
+	COUNT(CustomerKey) AS 'Número de CLientes',
+	AVG(YearlyIncome) AS 'Média Salarial'
 
---SELECT
---	DepartmentName,
---	COUNT(EmployeeKey)
+FROM DimCustomer
+
+GROUP BY Education
+ORDER BY COUNT(CustomerKey) DESC
+
+--9)
+
+SELECT
+	DepartmentName,
+	COUNT(EmployeeKey)
 	
 
---FROM DimEmployee
---WHERE EndDate IS NULL
---GROUP BY DepartmentName
---ORDER BY COUNT(EmployeeKey) DESC
+FROM DimEmployee
+WHERE EndDate IS NULL
+GROUP BY DepartmentName
+ORDER BY COUNT(EmployeeKey) DESC
 
 --10)
 SELECT 
@@ -143,4 +154,7 @@ SELECT
 	SUM(VacationHours)
 
 FROM DimEmployee
+WHERE Gender = 'F' AND EndDate IS NULL AND DepartmentName IN ('Production', 'Marketing', 'Production', 'Finance') AND
+HireDate LIKE ('1999%') OR HireDate LIKE ('2000%')
+
 GROUP BY Title
