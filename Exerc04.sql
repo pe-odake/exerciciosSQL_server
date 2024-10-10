@@ -21,12 +21,13 @@ FROM FactSales
 GROUP BY StoreKey
 ORDER By StoreKey ASC
 
---c) NO PROCESSO
-SELECT 
-	channelKey,
-	COUNT(SalesAmount) AS 'valor total vendido'
-
-FROM FactSales
+--c) 
+SELECT
+	channelKey AS 'Chaave do Canal',
+	SUM(SalesQuantity) AS 'Quant. Vendida'
+	
+FROM FactSales 
+WHERE DateKey = '2007'
 GROUP BY channelKey
 
 --2)
@@ -46,9 +47,9 @@ ORDER BY SUM(SalesAmount) DESC
 --3)
 --a)
 
-SELECT 
+SELECT TOP (1)
 	CustomerKey,
-	SUM(SalesQuantity) AS 'Quant. de Comprar'
+	SUM(SalesQuantity) AS 'Quant. de Compras'
 
 FROM FactOnlineSales
 
@@ -58,21 +59,21 @@ ORDER BY SUM(SalesQuantity) DESC
 --b)
 SELECT TOP (3)
 	ProductKey,
-	COUNT(SalesQuantity) AS 'Quant. Comprada'
+	SUM(SalesQuantity) AS 'Quant. Comprada'
 
 
 FROM FactOnlineSales
 WHERE CustomerKey = 19037
 GROUP BY ProductKey
 
-ORDER BY COUNT(SalesQuantity) DESC
+ORDER BY SUM(SalesQuantity) DESC
 
 --4)
 --a)
 
 SELECT 
 	BrandName,
-	COUNT(ProductKey) AS 'Número de Produtos por Marca'
+	COUNT(ProductKey) AS 'Número de Produtos por Marca' -- Pode-se para contar as colunas usar '*'
 	
 FROM DimProduct
 GROUP BY BrandName
@@ -108,31 +109,33 @@ ORDER BY SUM(Weight) DESC
 
 SELECT 
 	BrandName,
-	COUNT(DISTINCT ColorName)
+	COUNT(DISTINCT ColorName) AS 'COres dos Produtos'
 
 FROM DimProduct
 GROUP BY BrandName
 ORDER BY COUNT(DISTINCT ColorName) ASC
-
+--Nenhuma marca possui todas as cores
+	
 --7)
 
 SELECT 
 	Gender,
-	COUNT(CustomerKey),
-	AVG(YearlyIncome)
+	COUNT(CustomerKey) AS 'ID do Cliente',
+	AVG(YearlyIncome) AS 'Média do Cliente'
 
 FROM DimCustomer
 WHERE Gender IS NOT NULL
 GROUP BY Gender
-
+	
 --8)
+	
 SELECT 
 	Education,
 	COUNT(CustomerKey) AS 'Número de CLientes',
 	AVG(YearlyIncome) AS 'Média Salarial'
 
 FROM DimCustomer
-
+WHERE Education IS NOT NULL
 GROUP BY Education
 ORDER BY COUNT(CustomerKey) DESC
 
@@ -150,11 +153,11 @@ ORDER BY COUNT(EmployeeKey) DESC
 
 --10)
 SELECT 
-	Title,
+	Title ,
 	SUM(VacationHours)
 
 FROM DimEmployee
-WHERE Gender = 'F' AND EndDate IS NULL AND DepartmentName IN ('Production', 'Marketing', 'Production', 'Finance') AND
-HireDate LIKE ('1999%') OR HireDate LIKE ('2000%')
-
-GROUP BY Title
+WHERE EndDate IS NULL AND
+Gender ='F' AND DepartmentName IN('Production','Marketing','Engineering','Finance') AND
+HireDate BETWEEN ('1999/01/01') AND ('2000/12/31')
+GROUP BY Title;
