@@ -1,73 +1,72 @@
 use ContosoRetailDW
 
 --1)
+SELECT
+	a.ProductSubcategoryName,
+	a.ProductSubcategoryKey
 
-SELECT 
-	ProductSubCategoryName,
-	DimProductSubcategory.ProductSubcategoryKey
+FROM DimProductSubcategory AS a
 
-FROM DimProductSubCategory
-INNER JOIN DimProduct
-ON DimProductSubcategory.ProductSubcategoryKey = DimProduct.ProductSubcategoryKey
+INNER JOIN DimProduct AS b
+ON a.ProductSubcategoryKey = b.ProductSubcategoryKey
 
 --2)
+SELECT
+	b.ProductCategoryKey,
+	ProductSubcategoryName,
+	b.ProductCategoryName
 
-SELECT 
-	ProductCategoryName,
-	DimProductSubcategory.ProductCategoryKey
+FROM DimProductSubcategory AS a
 
-FROM DimProductCategory
-LEFT JOIN DimProductSubcategory
-
-ON DimProductCategory.ProductCategoryKey = DimProductSubcategory.ProductCategoryKey
+LEFT JOIN DimProductCategory AS b
+ON a.ProductCategoryKey = b.ProductCategoryKey
 
 --3)
-
-SELECT 
-	StoreKey, 
+SELECT
+	StoreKey,
 	StoreName,
 	EmployeeCount,
-	DimGeography.ContinentName,
-	DimGeography.RegionCountryName
+	b.ContinentName,
+	b.RegionCountryName
 
-FROM DimStore
-LEFT JOIN DimGeography
+FROM DimStore AS a
 
-ON DimStore.GeographyKey = DimGeography.GeographyKey
+LEFT JOIN DimGeography AS b
+ON a.GeographyKey = b.GeographyKey
 
 --4)
---a)
-
 SELECT
-	DimProduct.ProductName AS 'Produto', 
-	DimProduct.ClassName AS 'Classe do Produto',
-	DimProductCategory.ProductCategoryDescription AS 'Categoria'
-FROM
-	DimProduct
-LEFT JOIN DimProductSubcategory
-	ON DimProduct.ProductSubcategorykey = DimProductSubcategory.ProductSubcategorykey
-		LEFT JOIN DimProductCategory
-			ON DimProduct.ProductSubcategorykey = DimProductSubcategory.ProductSubcategorykey
+	ProductKey,
+	ProductName,
+	b.ProductSubcategoryName,
+	c.ProductCategoryName,
+	c.ProductCategoryKey
+
+FROM DimProduct AS a
+
+LEFT JOIN DimProductSubcategory AS b
+ON a.ProductSubcategoryKey = b.ProductSubcategoryKey
+
+LEFT JOIN DimProductCategory AS c
+ON b.ProductCategoryKey = c.ProductCategoryKey
+
 
 --5)
 --a)
-SELECT TOP(1000) *
-
+SELECT TOP(100) *
 FROM FactStrategyPlan
 
 --b)
 SELECT
-	AccountName,
-	FactStrategyPlan.AccountKey,
-	FactStrategyPlan.StrategyPlanKey,
-	FactStrategyPlan.DateKey,
-	AccountName,
-	FactStrategyPlan.Amount
+	b.AccountName,
+	StrategyPlanKey,
+	DateKey,
+	Amount
 
-FROM DimAccount
-INNER JOIN FactStrategyPlan
+FROM FactStrategyPlan AS a
 
-ON FactStrategyPlan.AccountKey = DimAccount.AccountKey
+INNER JOIN DimAccount AS b
+ON a.AccountKey = b.AccountKey
 
 --6)
 SELECT 
@@ -81,19 +80,19 @@ INNER JOIN FactStrategyPlan
 
 ON FactStrategyPlan.ScenarioKey = DimScenario.ScenarioKey
 
---7)
+--7) 
 SELECT
-	DimProductSubcategory.ProductSubcategoryName
+	ProductSubcategoryName
 
-FROM DimProductSubcategory
-LEFT JOIN DimProduct
+FROM DimProduct AS a
+RIGHT JOIN DimProductSubcategory AS b
 
-ON DimProductSubcategory.ProductSubcategoryKey = DimProduct.ProductSubcategoryKey
-WHERE DimProduct.ProductKey IS NULL
+ON a.ProductSubcategoryKey = b.ProductSubcategoryKey
+WHERE a.ProductKey IS NULL
 
---8)
+--8) 
 SELECT
-	BrandName,
+	DISTINCT BrandName,
 	DimChannel.ChannelName
 
 FROM DimProduct
@@ -103,26 +102,28 @@ INNER JOIN DimChannel
 ON DimChannel.ChannelKey = FactSales.ChannelKey
 WHERE BrandName IN ('Contoso', 'Fabrikam', 'Litware')
 
+---------------------
+
+SELECT
+	DISTINCT BrandName,
+	DimChannel.ChannelName
+
+FROM DimProduct CROSS JOIN DimChannel
+WHERE BrandName IN ('Contoso', 'Fabrikam', 'Litware')
+
 --9)
 SELECT
-	FactSales.SalesKey,
-	DimChannel.ChannelName,
-	DimStore.StoreName,
-	DimProduct.ProductName,
-	FactSales.SalesAmount
+	OnlineSalesKey,
+	Datekey,
+	PromotionName,
+	SalesAmount
+FROM FactOnlineSales
 
-FROM FactSales
+INNER JOIN DimPromotion
+ON FactOnlineSales.PromotionKey = DimPromotion.PromotionKey
+WHERE PromotionName <> 'No Discount'
 
-INNER JOIN DimChannel
-ON FactSales.channelKey = DimChannel.ChannelKey
-
-INNER JOIN DimStore
-ON FactSales.StoreKey = DimStore.StoreKey
-
-INNER JOIN DimProduct
-ON FactSales.ProductKey = DimProduct.ProductKey
-
-ORDER BY FactSales.SalesAmount DESC
+ORDER BY DateKey ASC
 
 --10)
 SELECT
