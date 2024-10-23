@@ -182,12 +182,68 @@ ON b.ClienteID = c.ClienteID
 GROUP BY c.NomeCliente
 
 --7)
+
 SELECT
 	NomeProduto,
-	AVG(b.Quantidade)
+	AVG(b.Quantidade) AS 'Quantidade Comprada'
 
 FROM Produtos AS a
 INNER JOIN DetalhesPedidos AS b
 ON a.ProdutoID = b.ProdutoID
 GROUP BY NomeProduto
 
+--8)
+
+--Objetivo: Exibir quantos pedidos foram feitos em cada mês.
+
+SELECT 
+	YEAR(Pedidos.DataPedido) AS 'Ano',
+	MONTH(Pedidos.DataPedido) AS 'Mês',
+	COUNT(PedidoID) AS 'Número de Pedidos'
+
+FROM Pedidos
+GROUP BY YEAR(Pedidos.DataPedido), MONTH(Pedidos.DataPedido)
+
+--9)
+--Objetivo: Mostrar o valor total vendido de produtos, agrupado por categoria de produto.
+
+SELECT 
+	d.NomeCategoria,
+	SUM(b.Quantidade * c.Preco) AS 'Soma do Valor Total de Produtos Vendidos'
+
+FROM Pedidos AS a
+
+INNER JOIN DetalhesPedidos AS b
+ON a.PedidoID = b.PedidoID
+
+INNER JOIN Produtos AS c
+ON b.ProdutoID = c.ProdutoID
+
+INNER JOIN Categorias AS d
+ON c.CategoriaID = d.CategoriaID
+GROUP BY NomeCategoria
+
+--10)
+--Objetivo: Exibir o valor total do pedido mais caro de cada cliente.
+
+--CRIANDO A COLUNA
+
+ALTER TABLE Pedidos ADD Total DECIMAL(10, 2);
+
+
+UPDATE Pedidos
+SET Total = (
+    SELECT SUM(DetalhesPedidos.Quantidade * Produtos.Preco)
+    FROM DetalhesPedidos
+    INNER JOIN Produtos ON DetalhesPedidos.ProdutoID = Produtos.ProdutoID
+    WHERE DetalhesPedidos.PedidoID = Pedidos.PedidoID
+);
+
+SELECT
+	NomeCliente,
+	MAX(b.Total) AS 'Preço do Pedido'
+
+FROM Clientes AS a
+INNER JOIN Pedidos AS b
+ON a.ClienteID = b.ClienteID
+GROUP BY NomeCliente
