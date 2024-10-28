@@ -87,3 +87,23 @@ SELECT * FROM fContratos
 
 --5)
 
+SELECT * FROM fContratos
+
+UPDATE fContratos
+SET Data_de_Assinatura = '2019-03-17 00:00:00'
+WHERE ID_Contrato = 4
+
+UPDATE fContratos
+SET ID_Gerente = 2
+WHERE ID_Contrato = 4
+
+UPDATE fContratos
+SET Valor_do_Contrato = 33500
+WHERE ID_Contrato = 4
+
+--6)
+
+DELETE FROM fContratos
+WHERE ID_Contrato = 11
+
+SELECT * FROM fContratos
