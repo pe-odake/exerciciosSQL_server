@@ -1,6 +1,6 @@
 --1)
 
-DECLARE @valor1 INT, @valor2 FLOAT, @valor3 FLOAT, @valor4 INT
+DECLARE @valor1 INT, @valor2 INT, @valor3 INT, @valor4 INT
 SET @valor1 = 10
 SET @valor2 = 5
 SET @valor3 = 34
@@ -23,7 +23,7 @@ SELECT @multiplicacao
 
 --d)
 DECLARE @divisao FLOAT
-SET @divisao = @valor3 / @valor4
+SET @divisao = CAST(@valor3 AS FLOAT) / CAST(@valor4 AS FLOAT)
 SELECT ROUND(@divisao, 2)
 
 --2)
@@ -48,14 +48,22 @@ DECLARE @lojas_fechadas VARCHAR(MAX)
 SET @lojas_fechadas = ''
 
 SELECT 
-@lojas_fechadas = @lojas_fechadas + StoreName + CHAR(10) 
-FROM DimStore WHERE CloseDate IS NOT NULL AND CloseDate BETWEEN '01/01/2008' AND '31/12/2008'
+	@lojas_fechadas = @lojas_fechadas + StoreName + ', '
 
-PRINT 'As lojas que fecharam foram: ' + @lojas_fechadas
+FROM DimStore 
+WHERE CloseDate IS NOT NULL AND CloseDate BETWEEN '01/01/2008' AND '31/12/2008'
+PRINT 'As lojas que fecharam foram: ' + @lojas_fechadas 
 
 --5)
 DECLARE @consultaPorSubcategoria VARCHAR(MAX), @subCategoria VARCHAR(MAX)
 SET @subCategoria = 'Lamps'
 
-SELECT ProductName, b.ProductSubcategoryName FROM DimProduct AS a INNER JOIN DimProductSubcategory AS b ON a.ProductSubcategoryKey = b.ProductSubcategoryKey WHERE ProductSubcategoryName = @subCategoria
+SELECT 
+	ProductName, 
+	b.ProductSubcategoryName 
+
+FROM DimProduct AS a 
+INNER JOIN DimProductSubcategory AS b 
+ON a.ProductSubcategoryKey = b.ProductSubcategoryKey 
+WHERE ProductSubcategoryName = @subCategoria
 
